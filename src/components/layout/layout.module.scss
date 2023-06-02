@@ -1,0 +1,49 @@
+$heading-color: black;
+$heading-font-size: 18px;
+$marked-link-color: #52C41A;
+$heading-color-hover: rgb(58, 58, 58);
+$marked-link-color-hover: #65da2a;
+
+header {
+    margin-bottom: 26px;
+    width: 100%;
+    height: 80px;
+    font-family: 'Inter', sans-serif;
+    background-color: white;
+    font-size: $heading-font-size;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+
+    :first-child {
+        flex-grow: 2;
+    }
+
+    a {
+        text-decoration: none;
+        color: $heading-color;
+        transition: all ease-in .2s;
+
+        &:hover {
+            color: $heading-color-hover;
+        }
+    }
+
+
+    .signUpButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 109px;
+        height: 51px;
+        color: $marked-link-color;
+        margin-left: 20px;
+        border: 2px solid $marked-link-color;
+        border-radius: 5px;
+
+        &:hover {
+            color: $marked-link-color-hover;
+            border-color: $marked-link-color-hover;
+        }
+    }
+}

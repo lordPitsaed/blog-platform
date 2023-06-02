@@ -1,0 +1,100 @@
+$heading-color: #1890FF;
+$text-color-secondary: rgba(0, 0, 0, 0.5);
+$text-color: rgba(0, 0, 0, 0.75);
+
+article {
+    font-family: 'Inter', sans-serif;
+    background-color: white;
+    padding: 19px;
+    width: 87%;
+    margin: 0 auto;
+    margin-bottom: 26px;
+
+    -webkit-filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.15));
+
+
+    .heading {
+        display: flex;
+        justify-content: space-between;
+
+        .articleInfo {
+            display: grid;
+            gap: 2px 13px;
+            grid-template:
+                "title favorites" 28px
+                "tags tags" 22px / auto auto;
+            align-items: center;
+
+            h5 {
+                grid-area: title;
+                font-size: 20px;
+                color: $heading-color;
+                margin: 0;
+                max-width: 400px;
+            }
+
+            .favoritesCount {
+                grid-area: favorites;
+                color: $text-color-secondary;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+
+                &:before {
+                    content: url('./heart-ico.svg');
+                    margin-right: 5px;
+                    margin-top: 2px;
+                }
+            }
+
+            .tags {
+                grid-area: tags;
+                max-width: 400px;
+                overflow: hidden;
+                max-height: 22px;
+            }
+        }
+
+        .authorInfo {
+            display: grid;
+            gap: 0 13px;
+            grid-template:
+                "name image" 28px
+                "createdAt image" 22px / auto auto;
+            align-items: center;
+
+            .authorName {
+                grid-area: name;
+                font-size: 18px;
+            }
+
+            .createdAt {
+                grid-area: createdAt;
+                color: $text-color-secondary;
+                font-size: 12px;
+            }
+
+            .authorImage {
+                grid-area: image;
+            }
+        }
+
+
+    }
+
+    .description {
+        font-size: 12px;
+        color: $text-color;
+        line-height: 22px;
+        max-width: 880px;
+        overflow: hidden;
+        max-height: 50px;
+    }
+
+    .text {
+        margin-top: 25px;
+        max-width: 707px;
+        overflow-wrap: break-word;
+    }
+}

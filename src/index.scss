@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400&display=swap');
+$app-background: #EBEEF3;
+
+*,
+:root {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    background-color: $app-background;
+}
+
+a {
+    text-decoration: none;
+}
+
+main {
+    min-height: 100vh;
+    padding-bottom: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
