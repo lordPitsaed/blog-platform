@@ -47,8 +47,7 @@ const Article: React.FC<{ article: Article; fullText: boolean }> = ({
           </div>
           <img
             className={classes.authorImage}
-            style={{ width: 46 }}
-            src={avatarPh}
+            src={article.author.image}
           />
         </div>
       </div>

@@ -63,6 +63,7 @@ article {
                 "name image" 28px
                 "createdAt image" 22px / auto auto;
             align-items: center;
+            text-align: end;
 
             .authorName {
                 grid-area: name;
@@ -77,6 +78,10 @@ article {
 
             .authorImage {
                 grid-area: image;
+                width: 46px;
+                height: 46px;
+                object-fit: contain;
+                border-radius: 50%;
             }
         }
 
