@@ -51,3 +51,19 @@ interface UserInfo {
     image: string;
   };
 }
+
+interface ErrorResponse {
+  errors: {
+    message: string;
+    error: {
+      name: string;
+      message: string;
+      code: string;
+      status: number;
+      inner: {
+        name: string;
+        message: string;
+      };
+    };
+  };
+}

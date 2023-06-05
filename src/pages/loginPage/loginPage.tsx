@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../app/store';
-import { loginUser, signUpUser } from '../signUp-page/authSlice';
-import classes from './signIn-page.module.scss';
+import classes from './LoginPage.module.scss';
+import { loginUser } from './loginSlice';
 
 interface FormInputs {
   email: string;
@@ -14,10 +14,10 @@ interface FormInputs {
 const SignInPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { error, status } = useSelector((state: RootState) => state.authSlice);
+  const { error, status } = useSelector((state: RootState) => state.loginSlice);
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
   } = useForm<FormInputs>({ mode: 'onChange' });
 
@@ -28,7 +28,7 @@ const SignInPage: React.FC = () => {
 
   useEffect(() => {
     if (status === 'success') {
-      navigate('/', { replace: true });
+      navigate(-1);
     }
   }, [status]);
 
@@ -36,7 +36,7 @@ const SignInPage: React.FC = () => {
     <div className={classes.formWrapper}>
       <div className={classes.header}>Sign In</div>
       {error.length > 0 && (
-        <span className={classes.error}>{error[0].message}</span>
+        <span className={classes.error}>{error[error.length - 1].message}</span>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <label className={classes.email}>
@@ -74,7 +74,12 @@ const SignInPage: React.FC = () => {
             </span>
           )}
         </label>
-        <input type='submit' value='Login' className={classes.submitButton} />
+        <input
+          disabled={!isValid}
+          type='submit'
+          value='Login'
+          className={classes.submitButton}
+        />
         <div className={classes.signInLink}>
           Don’t have an account? <Link to={'/sign-up'}>Sign Up.</Link>
         </div>

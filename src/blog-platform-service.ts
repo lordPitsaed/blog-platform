@@ -1,18 +1,32 @@
 class BlogService {
   private _baseUrl = `https://blog.kata.academy/api/`;
-  private async getResource(url: string) {
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+  private async getResource(url: string, token?: string) {
+    let res;
+
+    if (token !== undefined) {
+      res = await fetch(url, {
+        method: 'get',
+        headers: {
+          'Authorization': `Token ${token}`,
+        },
+      });
+    } else {
+      res = await fetch(url);
     }
+
     const body = (await res.json()) as
       | GetArticlesResponse
-      | GetArticleSlugResponse;
+      | GetArticleSlugResponse
+      | UserInfo
+      | ErrorResponse;
+    if (!res.ok) {
+      const { errors } = body as ErrorResponse;
+      throw new Error(`${errors.message}`);
+    }
     return body;
   }
 
   private async postResource(url: string, payload: string) {
-    console.log(payload);
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -20,13 +34,14 @@ class BlogService {
       },
       body: payload,
     });
-
-    if (res.status === 422) {
-      throw new Error(`User with this username already exist.`);
-    } else if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, received ${res.status}.`);
-    }
     const body = await res.json();
+    if (!res.ok) {
+      const { errors } = body as ErrorResponse;
+      const error =
+        String(Object.entries(errors))[0].toUpperCase() +
+        String(Object.entries(errors)).replace(/,/, ' ').slice(1);
+      throw new Error(`${error}`);
+    }
     return body;
   }
 
@@ -57,6 +72,11 @@ class BlogService {
       JSON.stringify(user),
     )) as UserInfo;
     return res;
+  }
+
+  async getLoggedUser(token: string) {
+    console.log(token);
+    return (await this.getResource(`${this._baseUrl}user/`, token)) as UserInfo;
   }
 }
 

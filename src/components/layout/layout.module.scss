@@ -3,6 +3,8 @@ $heading-font-size: 18px;
 $marked-link-color: #52C41A;
 $heading-color-hover: rgb(58, 58, 58);
 $marked-link-color-hover: #65da2a;
+$logoutButton-color: #000000BF;
+$logoutButton-hover: #000000;
 
 header {
     margin-bottom: 26px;
@@ -20,6 +22,8 @@ header {
     }
 
     a {
+        display: flex;
+        align-items: center;
         text-decoration: none;
         color: $heading-color;
         transition: all ease-in .2s;
@@ -29,6 +33,14 @@ header {
         }
     }
 
+    .username {
+        margin-right: 13px;
+        font-size: 18px;
+    }
+
+    .avatar {
+        width: 46px
+    }
 
     .signUpButton {
         display: flex;
@@ -38,12 +50,32 @@ header {
         height: 51px;
         color: $marked-link-color;
         margin-left: 20px;
-        border: 2px solid $marked-link-color;
+        border: 1px solid $marked-link-color;
         border-radius: 5px;
 
         &:hover {
             color: $marked-link-color-hover;
             border-color: $marked-link-color-hover;
+        }
+    }
+
+    .logOutButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 109px;
+        height: 51px;
+        color: $logoutButton-color;
+        font-size: 18px;
+        margin-left: 20px;
+        border: 1px solid $logoutButton-color;
+        border-radius: 5px;
+        background: none;
+        cursor: pointer;
+
+        &:hover {
+            color: $logoutButton-hover;
+            border-color: $logoutButton-hover;
         }
     }
 }

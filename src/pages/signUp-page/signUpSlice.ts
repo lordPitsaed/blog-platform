@@ -5,22 +5,20 @@ import {
 } from '@reduxjs/toolkit';
 import blogPlatformService from '../../blog-platform-service';
 
-interface authSliceState {
+interface SignUpSliceState {
   user: UserInfo;
   status: string;
   error: SerializedError[];
-  userLogged: boolean;
 }
 
-const initialState: authSliceState = {
+const initialState: SignUpSliceState = {
   user: {} as UserInfo,
   status: 'idle',
   error: [],
-  userLogged: false,
 };
 
-const authSlice = createSlice({
-  name: 'authSlice',
+const signUpSlice = createSlice({
+  name: 'signUpSlice',
   initialState,
   reducers: {},
   extraReducers(builder) {
@@ -38,21 +36,6 @@ const authSlice = createSlice({
           state.error = state.error.concat(action.error);
           console.log(state.error);
         }
-      })
-      .addCase(loginUser.pending, (state) => {
-        state.status = 'pending';
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = 'success';
-        state.user.user = action.payload.user;
-        state.userLogged = true;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = 'error';
-        if (action.error !== undefined) {
-          state.error = state.error.concat(action.error);
-          console.log(state.error);
-        }
       });
   },
 });
@@ -64,11 +47,4 @@ export const signUpUser = createAsyncThunk(
   },
 );
 
-export const loginUser = createAsyncThunk(
-  'authSlice/loginUser',
-  async (user: LoginData) => {
-    return blogPlatformService.postLogin(user);
-  },
-);
-
-export default authSlice.reducer;
+export default signUpSlice.reducer;

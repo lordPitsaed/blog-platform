@@ -1,11 +1,11 @@
-import { Spin } from "antd"
-import classes from "./loading-spin.module.scss"
+import { Spin } from 'antd';
+import classes from './loading-spin.module.scss';
 const Loading = () => {
   return (
     <div className={classes.loading}>
-      <Spin size="large" />
+      <Spin size='large' />
     </div>
-  )
-}
+  );
+};
 
-export default Loading
+export default Loading;

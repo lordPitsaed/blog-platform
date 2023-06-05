@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../../app/store';
-import { signUpUser } from './authSlice';
 import classes from './signUp-page.module.scss';
+import { signUpUser } from './signUpSlice';
 
 interface FormInputs {
   username: string;
@@ -17,9 +17,15 @@ interface FormInputs {
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { error, status } = useSelector((state: RootState) => state.authSlice);
+  const { error, status } = useSelector(
+    (state: RootState) => state.signUpSlice,
+  );
+
   const onSubmit = (data: FormInputs) => {
-    const { username, email, password } = data;
+    const { username, password } = data;
+    let { email } = data;
+    email = email.toLowerCase();
+    console.log(email);
     dispatch(signUpUser({ user: { username, email, password } }));
   };
 
@@ -31,7 +37,7 @@ const SignUpPage: React.FC = () => {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
     watch,
   } = useForm<FormInputs>({ mode: 'onChange' });
@@ -40,7 +46,7 @@ const SignUpPage: React.FC = () => {
     <div className={classes.formWrapper}>
       <div className={classes.header}>Create new account</div>
       {error.length > 0 && (
-        <span className={classes.error}>{error[0].message}</span>
+        <span className={classes.error}>{error[error.length - 1].message}</span>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <label className={classes.username}>
@@ -128,7 +134,7 @@ const SignUpPage: React.FC = () => {
           <span className={classes.error}>You must agree our data policy.</span>
         )}{' '}
         <input
-          disabled={status === 'pending'}
+          disabled={status === 'pending' || !isValid}
           type='submit'
           value='Create'
           className={classes.submitButton}

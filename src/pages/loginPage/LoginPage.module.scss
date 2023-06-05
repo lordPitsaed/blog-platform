@@ -54,6 +54,15 @@
         &:hover {
             background-color: #237dd1
         }
+
+        &:disabled {
+            -webkit-filter: grayscale(.5);
+            filter: grayscale(.5);
+
+            &:hover {
+                background-color: #1890FF
+            }
+        }
     }
 
     .signInLink {
