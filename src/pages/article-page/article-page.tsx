@@ -10,11 +10,23 @@ import { fetchArticleBySlug } from './article-pageSlice';
 const ArticlePage: React.FC = () => {
   const { slug } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { article, status, error } = useSelector(
-    (state: RootState) => state.articlePageSlice,
-  );
+  const { article, status, error } = useSelector((state: RootState) => state.articlePageSlice);
+  const { token, userLogged } = useSelector((state: RootState) => {
+    let token = '';
+    if (state.loginSlice.userLogged && state.loginSlice.status === 'success') {
+      token = state.loginSlice.user.user.token;
+    }
+    return { token, userLogged: state.loginSlice.userLogged };
+  });
+
   useEffect(() => {
-    dispatch(fetchArticleBySlug(slug as string));
+    if (slug) {
+      if (userLogged) {
+        dispatch(fetchArticleBySlug({ slug, token }));
+      } else {
+        dispatch(fetchArticleBySlug({ slug }));
+      }
+    }
   }, [dispatch]);
 
   if (status === 'pending') {
@@ -23,14 +35,7 @@ const ArticlePage: React.FC = () => {
   if (status === 'success') {
     return <Article article={article} fullText />;
   }
-  return (
-    <Alert
-      message='Error'
-      description={error.map((el) => el.message)}
-      type='error'
-      showIcon
-    />
-  );
+  return <Alert message='Error' description={error.message} type='error' showIcon />;
 };
 
 export default ArticlePage;

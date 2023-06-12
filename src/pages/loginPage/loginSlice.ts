@@ -1,21 +1,17 @@
-import {
-  SerializedError,
-  createAsyncThunk,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { SerializedError, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import blogPlatformService from '../../blog-platform-service';
 import { getCookie } from '../../helperFunctions';
 
 interface LoginSliceState {
   user: UserInfo;
   status: string;
-  error: SerializedError[];
+  error: SerializedError;
   userLogged: boolean;
 }
 const initialState: LoginSliceState = {
   user: {} as UserInfo,
   status: 'idle',
-  error: [],
+  error: {} as SerializedError,
   userLogged: getCookie('user') !== 'no cookie' ? true : false,
 };
 
@@ -25,9 +21,8 @@ const loginSlice = createSlice({
   reducers: {
     logOut: (state) => {
       state.userLogged = false;
+      state.user = {} as UserInfo;
       state.status = 'idle';
-      document.cookie =
-        'user' + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     },
   },
   extraReducers(builder) {
@@ -36,21 +31,16 @@ const loginSlice = createSlice({
         state.status = 'pending';
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        state.userLogged = true;
         state.status = 'success';
         state.user.user = action.payload.user;
         const { token, username } = action.payload.user;
-        document.cookie =
-          'user' +
-          '=' +
-          encodeURIComponent(username) +
-          '!' +
-          encodeURIComponent(token);
-        state.userLogged = true;
+        document.cookie = 'user=' + encodeURIComponent(username) + '!' + encodeURIComponent(token) + '; path=/';
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'error';
         if (action.error !== undefined) {
-          state.error = state.error.concat(action.error);
+          state.error = action.error;
         }
       })
       .addCase(restoreUser.pending, (state) => {
@@ -60,28 +50,24 @@ const loginSlice = createSlice({
         state.status = 'success';
         state.user.user = action.payload.user;
         state.userLogged = true;
+        state.error = {};
       })
       .addCase(restoreUser.rejected, (state, action) => {
         console.log(action.meta);
         state.status = 'error';
         if (action.error !== undefined) {
-          state.error = state.error.concat(action.error);
-          console.log(state.error);
+          state.error = action.error;
         }
       });
   },
 });
 
-export const loginUser = createAsyncThunk(
-  'authSlice/loginUser',
-  async (user: LoginData) => {
-    return blogPlatformService.postLogin(user);
-  },
-);
+export const loginUser = createAsyncThunk('authSlice/loginUser', async (user: LoginData) => {
+  return blogPlatformService.postLogin(user);
+});
 
-export const restoreUser = createAsyncThunk(
-  'authSlice/restoreUser',
-  async (token: string) => blogPlatformService.getLoggedUser(token),
+export const restoreUser = createAsyncThunk('authSlice/restoreUser', async (token: string) =>
+  blogPlatformService.getLoggedUser(token),
 );
 
 export default loginSlice.reducer;

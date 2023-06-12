@@ -67,3 +67,21 @@ interface ErrorResponse {
     };
   };
 }
+
+interface EditData {
+  user: {
+    username?: string;
+    email?: string;
+    password?: string;
+    image?: string;
+  };
+}
+
+interface NewArticle {
+  article: {
+    title: string;
+    description: string;
+    body: string;
+    tagList: string[];
+  };
+}

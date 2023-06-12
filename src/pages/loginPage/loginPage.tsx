@@ -19,6 +19,7 @@ const SignInPage: React.FC = () => {
     register,
     formState: { errors, isValid },
     handleSubmit,
+    setError,
   } = useForm<FormInputs>({ mode: 'onChange' });
 
   const onSubmit = (data: FormInputs) => {
@@ -28,16 +29,30 @@ const SignInPage: React.FC = () => {
 
   useEffect(() => {
     if (status === 'success') {
-      navigate(-1);
+      navigate('/');
     }
   }, [status]);
+
+  useEffect(() => {
+    if (error && error.name === 'ServerValidationError') {
+      const errorObj = JSON.parse(error.message as string);
+      for (const field in errorObj) {
+        if (field === 'email or password') {
+          setError('email', {
+            type: 'server',
+            message: 'Email or password is wrong',
+          });
+          setError('password', {
+            type: 'server',
+          });
+        }
+      }
+    }
+  }, [error]);
 
   return (
     <div className={classes.formWrapper}>
       <div className={classes.header}>Sign In</div>
-      {error.length > 0 && (
-        <span className={classes.error}>{error[error.length - 1].message}</span>
-      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <label className={classes.email}>
           <span>Email address</span>
@@ -47,14 +62,13 @@ const SignInPage: React.FC = () => {
             placeholder='Email address'
             {...register('email', {
               required: true,
-              pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                message: 'Username must be 3-20 characters long',
+              },
             })}
           />
-          {errors.email && (
-            <span className={classes.error}>
-              Email must be valid email address.
-            </span>
-          )}
+          {errors.email && <span className={classes.error}>{errors.email.message}</span>}
         </label>
         <label className={classes.password}>
           <span>Password</span>
@@ -64,22 +78,13 @@ const SignInPage: React.FC = () => {
             placeholder='Password'
             {...register('password', {
               required: true,
-              minLength: 6,
-              maxLength: 40,
+              minLength: { value: 6, message: 'Password must be 6-40 characters long' },
+              maxLength: { value: 40, message: 'Password must be 6-40 characters long' },
             })}
           />
-          {errors.password && (
-            <span className={classes.error}>
-              Password must be 6-40 characters long.
-            </span>
-          )}
+          {errors.password && <span className={classes.error}>{errors.password.message}</span>}
         </label>
-        <input
-          disabled={!isValid}
-          type='submit'
-          value='Login'
-          className={classes.submitButton}
-        />
+        <input disabled={!isValid} type='submit' value='Login' className={classes.submitButton} />
         <div className={classes.signInLink}>
           Don’t have an account? <Link to={'/sign-up'}>Sign Up.</Link>
         </div>

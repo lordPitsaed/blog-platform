@@ -1,20 +1,16 @@
-import {
-  SerializedError,
-  createAsyncThunk,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { SerializedError, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import blogPlatformService from '../../blog-platform-service';
 
 interface articlePageState {
   article: Article;
   status: string;
-  error: SerializedError[];
+  error: SerializedError;
 }
 
 const initialState: articlePageState = {
   article: {} as Article,
   status: 'idle',
-  error: [],
+  error: {},
 };
 
 const articlePageSlice = createSlice({
@@ -33,16 +29,22 @@ const articlePageSlice = createSlice({
       .addCase(fetchArticleBySlug.rejected, (state, action) => {
         state.status = 'error';
         if (action.error !== undefined) {
-          state.error = state.error.concat(action.error);
+          state.error = action.error;
         }
       });
   },
 });
 
+interface FetchArticleBySlugArgs {
+  slug: string;
+  token?: string;
+}
+
 export const fetchArticleBySlug = createAsyncThunk(
   'articlePage/fetchArticleBySlug',
-  async (slug: string) => {
-    return blogPlatformService.getArticleBySlug(slug);
+  async (args: FetchArticleBySlugArgs) => {
+    const { slug, token } = args;
+    return blogPlatformService.getArticleBySlug(slug, token);
   },
 );
 

@@ -17,6 +17,10 @@ header {
     display: flex;
     align-items: center;
 
+    button {
+        background: none;
+    }
+
     :first-child {
         flex-grow: 2;
     }
@@ -39,7 +43,11 @@ header {
     }
 
     .avatar {
-        width: 46px
+        width: 46px;
+        height: 46px;
+        -o-object-fit: cover;
+        object-fit: cover;
+        border-radius: 50%;
     }
 
     .signUpButton {
@@ -59,6 +67,26 @@ header {
         }
     }
 
+    .createArticleLink {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 112px;
+        height: 31px;
+        color: $marked-link-color;
+        margin-right: 27px;
+        border: 1px solid $marked-link-color;
+        border-radius: 5px;
+        font-family: 'Inter UI', sans-serif;
+        font-size: 14px;
+        line-height: 22px;
+
+        &:hover {
+            color: $marked-link-color-hover;
+            border-color: $marked-link-color-hover;
+        }
+    }
+
     .logOutButton {
         display: flex;
         align-items: center;
@@ -70,7 +98,6 @@ header {
         margin-left: 20px;
         border: 1px solid $logoutButton-color;
         border-radius: 5px;
-        background: none;
         cursor: pointer;
 
         &:hover {

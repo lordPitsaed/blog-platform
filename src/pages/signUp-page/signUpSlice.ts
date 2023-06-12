@@ -8,19 +8,23 @@ import blogPlatformService from '../../blog-platform-service';
 interface SignUpSliceState {
   user: UserInfo;
   status: string;
-  error: SerializedError[];
+  error: SerializedError;
 }
 
 const initialState: SignUpSliceState = {
   user: {} as UserInfo,
   status: 'idle',
-  error: [],
+  error: {} as SerializedError,
 };
 
 const signUpSlice = createSlice({
   name: 'signUpSlice',
   initialState,
-  reducers: {},
+  reducers: {
+    clearErrors: (state) => {
+      state.error = {};
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(signUpUser.pending, (state) => {
@@ -29,12 +33,12 @@ const signUpSlice = createSlice({
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.status = 'success';
         state.user.user = action.payload.user;
+        state.error = {};
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.status = 'error';
         if (action.error !== undefined) {
-          state.error = state.error.concat(action.error);
-          console.log(state.error);
+          state.error = action.error;
         }
       });
   },
@@ -46,5 +50,7 @@ export const signUpUser = createAsyncThunk(
     return blogPlatformService.postRegisterUser(user);
   },
 );
+
+export const { clearErrors } = signUpSlice.actions;
 
 export default signUpSlice.reducer;

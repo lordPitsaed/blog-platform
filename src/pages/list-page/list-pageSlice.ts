@@ -1,58 +1,55 @@
-import {
-  SerializedError,
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit"
-import blogPlatformService from "../../blog-platform-service"
+import { SerializedError, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import blogPlatformService from '../../blog-platform-service';
 
 interface articleListState {
-  articles: Article[]
-  status: string
-  error: SerializedError[]
-  totalArticles: number
-  offset: number
+  articles: Article[];
+  status: string;
+  error: SerializedError;
+  totalArticles: number;
 }
 
 const initialState: articleListState = {
   articles: [],
-  status: "idle",
-  error: [],
+  status: 'idle',
+  error: {},
   totalArticles: 0,
-  offset: 0,
-}
+};
 
 const listPageSlice = createSlice({
-  name: "articleList",
+  name: 'articleList',
   initialState,
-  reducers: {
-    setOffset: (state, action) => {
-      state.offset = action.payload
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchArticlesList.pending, (state) => {
-        state.status = "pending"
+        state.status = 'pending';
       })
       .addCase(fetchArticlesList.fulfilled, (state, action) => {
-        state.status = "success"
-        state.articles = action.payload.articles
-        state.totalArticles = action.payload.totalArticles
+        state.status = 'success';
+        state.articles = action.payload.articles;
+        state.totalArticles = action.payload.totalArticles;
       })
       .addCase(fetchArticlesList.rejected, (state, action) => {
         if (action.error !== undefined) {
-          state.error = state.error.concat(action.error)
+          console.log(action.error);
+          state.error = action.error;
         }
-      })
+      });
   },
-})
+});
 
-export const fetchArticlesList = createAsyncThunk(
-  "articleList/fetchArticlesList",
-  async (offset: number) => {
-    return blogPlatformService.getArticles(offset)
-  },
-)
-export const { setOffset } = listPageSlice.actions
+interface FetchArticlesArgs {
+  offset: number;
+  token?: string;
+}
 
-export default listPageSlice.reducer
+export const fetchArticlesList = createAsyncThunk('articleList/fetchArticlesList', async (args: FetchArticlesArgs) => {
+  const { offset, token } = args;
+  if (token === undefined) {
+    return blogPlatformService.getArticles(offset);
+  } else {
+    return blogPlatformService.getArticles(offset, token);
+  }
+});
+
+export default listPageSlice.reducer;
